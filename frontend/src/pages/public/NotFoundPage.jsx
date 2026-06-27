@@ -14,7 +14,7 @@ export default function NotFoundPage() {
           </h1>
           <p className="text-sm text-[#888] leading-relaxed mb-10">
             The page you are looking for does not exist or may have been moved.
-            Let us help you find your way back to ZEE.BY ZOHAIB.
+            Let us help you find your way back to ZEE.BY ZUNAISHA.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

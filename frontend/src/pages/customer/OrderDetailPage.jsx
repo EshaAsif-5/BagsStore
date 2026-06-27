@@ -7,11 +7,12 @@ import {
 } from "lucide-react";
 import orderService from "../../services/orderService.js";
 import toast from "react-hot-toast";
+import { env } from "../../config/env.js";
 
 const formatPrice = (n) => `PKR ${Number(n).toLocaleString("en-PK")}`;
 const formatDate  = (iso) => new Date(iso).toLocaleString("en-PK", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 
-const WHATSAPP = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
+const WHATSAPP = env.whatsappNumber;
 
 const PAYMENT_LABELS = {
   cod: "Cash on Delivery", bank_transfer: "Bank Transfer",

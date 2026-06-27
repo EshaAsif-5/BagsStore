@@ -2,7 +2,7 @@ import { Router } from "express";
 import { authController } from "../controllers/auth.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js";
 import { validate } from "../middleware/validate.middleware.js";
-import { authLimiter } from "../app.js";
+import { authLimiter } from "../middleware/authLimiter.middleware.js";
 import {
   validateRegister,
   validateLogin,

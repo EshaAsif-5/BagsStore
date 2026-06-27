@@ -111,7 +111,9 @@ const useAuthStore = create(
           return data.data.user;
         } catch (err) {
           const message =
-            err.response?.data?.message || "Registration failed. Please try again.";
+            err.message ||
+            err.response?.data?.message ||
+            "Registration failed. Please try again.";
           get()._setError(message);
           throw new Error(message);
         }
@@ -130,7 +132,9 @@ const useAuthStore = create(
           return data.data.user;
         } catch (err) {
           const message =
-            err.response?.data?.message || "Invalid email or password.";
+            err.message ||
+            err.response?.data?.message ||
+            "Invalid email or password.";
           get()._setError(message);
           throw new Error(message);
         }

@@ -1,4 +1,22 @@
 import mongoose from "mongoose";
+import Cart from "../models/Cart.model.js";
+
+const syncCartIndexes = async () => {
+  // Remove legacy index that blocked multiple guest carts (user: null dup key).
+  try {
+    await Cart.collection.dropIndex("user_1");
+  } catch {
+    // Index may already be replaced or never existed
+  }
+
+  // Guest carts created before this fix stored user: null — unset so partial index works.
+  await Cart.updateMany(
+    { sessionId: { $ne: null }, user: null },
+    { $unset: { user: "" } }
+  );
+
+  await Cart.syncIndexes();
+};
 
 const connectDB = async () => {
   const MONGO_URI = process.env.MONGO_URI;
@@ -18,6 +36,8 @@ const connectDB = async () => {
     console.log(
       `✅ MongoDB connected: ${connection.connection.host} | DB: ${connection.connection.name}`
     );
+
+    await syncCartIndexes();
 
     // Handle connection events after initial connect
     mongoose.connection.on("disconnected", () => {

@@ -13,7 +13,7 @@ import User from "../models/User.model.js";
 const findById = (id, includeSensitive = false) => {
   const query = User.findById(id);
   if (includeSensitive) {
-    query.select("+passwordHash +refreshToken +passwordChangedAt");
+    query.select("+passwordHash +refreshToken +passwordChangedAt +isActive");
   }
   return query.lean(false); // Return Mongoose document (not plain object)
 };
@@ -25,7 +25,7 @@ const findById = (id, includeSensitive = false) => {
 const findByEmail = (email, includeSensitive = false) => {
   const query = User.findOne({ email: email.toLowerCase().trim() });
   if (includeSensitive) {
-    query.select("+passwordHash +refreshToken +passwordChangedAt");
+    query.select("+passwordHash +refreshToken +passwordChangedAt +isActive");
   }
   return query;
 };

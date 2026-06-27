@@ -1,7 +1,8 @@
 import { MessageCircle } from "lucide-react";
+import { env } from "../../config/env.js";
 
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
-const DEFAULT_MESSAGE = "Hi! I'd like to know more about ZEE.BY ZOHAIB bags.";
+const WHATSAPP_NUMBER = env.whatsappNumber;
+const DEFAULT_MESSAGE = "Hi! I'd like to know more about ZEE.BY ZUNAISHA bags.";
 
 // ─────────────────────────────────────────────
 // WHATSAPP FLOATING ACTION BUTTON

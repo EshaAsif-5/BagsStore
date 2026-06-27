@@ -96,7 +96,13 @@ export default function ProductVariantSelector({ variants = [], onChange, disabl
 
   if (!variants || variants.length === 0) return null;
 
-  // If only one variant exists, no selection UI needed
+  // If only one variant exists, auto-select it for add-to-cart
+  useEffect(() => {
+    if (variants.length === 1) {
+      onChange?.(variants[0]);
+    }
+  }, [variants, onChange]);
+
   if (variants.length === 1) {
     const v = variants[0];
     return (

@@ -12,15 +12,16 @@ import {
 import useCartStore from "../../store/cartStore.js";
 import useAuthStore from "../../store/authStore.js";
 import toast from "react-hot-toast";
+import { env } from "../../config/env.js";
 
 // ─────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────
 const formatPrice = (n) => `PKR ${Number(n).toLocaleString("en-PK")}`;
-const SHIPPING_THRESHOLD = 5000;
-const SHIPPING_FEE = 200;
+const SHIPPING_THRESHOLD = env.shippingFreeThreshold;
+const SHIPPING_FEE = env.shippingFeeStandard;
 
-const WHATSAPP = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
+const WHATSAPP = env.whatsappNumber;
 
 // ─────────────────────────────────────────────
 // CART ITEM ROW

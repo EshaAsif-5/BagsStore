@@ -87,11 +87,10 @@ contactSchema.index({ email: 1 });
 // ─────────────────────────────────────────────
 // PRE-SAVE: SET readAt WHEN MARKED AS READ
 // ─────────────────────────────────────────────
-contactSchema.pre("save", function (next) {
+contactSchema.pre("save", function () {
   if (this.isModified("isRead") && this.isRead && !this.readAt) {
     this.readAt = new Date();
   }
-  next();
 });
 
 // ─────────────────────────────────────────────

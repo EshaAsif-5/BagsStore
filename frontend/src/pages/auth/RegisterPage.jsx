@@ -167,7 +167,7 @@ export default function RegisterPage() {
             Create Account
           </h1>
           <p className="text-sm text-[#888] mt-2">
-            Join ZEE.BY ZOHAIB to save your orders, wishlist, and delivery
+            Join ZEE.BY ZUNAISHA to save your orders, wishlist, and delivery
             addresses.
           </p>
         </div>

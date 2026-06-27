@@ -124,11 +124,10 @@ reviewSchema.post("findOneAndDelete", async function (doc) {
 // ─────────────────────────────────────────────
 // PRE-SAVE: SET APPROVED TIMESTAMP
 // ─────────────────────────────────────────────
-reviewSchema.pre("save", function (next) {
+reviewSchema.pre("save", function () {
   if (this.isModified("isApproved") && this.isApproved && !this.approvedAt) {
     this.approvedAt = new Date();
   }
-  next();
 });
 
 // ─────────────────────────────────────────────

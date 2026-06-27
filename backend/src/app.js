@@ -6,6 +6,8 @@ import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import hpp from "hpp";
 import ApiError from "./utils/ApiError.js";
+import routes from "./routes/index.js";
+import { allowedOrigins, settings } from "./config/settings.js";
 
 const app = express();
 
@@ -17,24 +19,21 @@ app.use(helmet());
 // ─────────────────────────────────────────────
 // CORS
 // ─────────────────────────────────────────────
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  "http://localhost:5173", // Vite dev server
-].filter(Boolean);
+const allowedOriginsList = allowedOrigins;
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (e.g. mobile apps, Postman, curl)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
+      if (allowedOriginsList.includes(origin)) {
         return callback(null, true);
       }
       callback(new Error(`CORS: Origin '${origin}' not allowed.`));
     },
     credentials: true, // Required for HTTP-only cookie auth
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-guest-session-id"],
   })
 );
 
@@ -57,7 +56,7 @@ app.use(hpp());
 // ─────────────────────────────────────────────
 // REQUEST LOGGER (dev only)
 // ─────────────────────────────────────────────
-if (process.env.NODE_ENV === "development") {
+if (settings.nodeEnv === "development") {
   app.use(morgan("dev"));
 }
 
@@ -65,8 +64,8 @@ if (process.env.NODE_ENV === "development") {
 // GLOBAL RATE LIMITER (general API)
 // ─────────────────────────────────────────────
 const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  windowMs: settings.rateLimit.windowMs,
+  max: settings.rateLimit.max,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -78,17 +77,8 @@ app.use("/api", globalLimiter);
 
 // ─────────────────────────────────────────────
 // STRICTER RATE LIMITER (auth routes)
+// Defined in middleware/authLimiter.middleware.js
 // ─────────────────────────────────────────────
-export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    success: false,
-    message: "Too many login attempts. Please try again after 15 minutes.",
-  },
-});
 
 // ─────────────────────────────────────────────
 // HEALTH CHECK
@@ -96,8 +86,8 @@ export const authLimiter = rateLimit({
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "ZEE.BY ZOHAIB API is running.",
-    environment: process.env.NODE_ENV,
+    message: "ZEE.BY ZUNAISHA API is running.",
+    environment: settings.nodeEnv,
     timestamp: new Date().toISOString(),
   });
 });
@@ -105,8 +95,7 @@ app.get("/api/health", (req, res) => {
 // ─────────────────────────────────────────────
 // API ROUTES  (imported and mounted here as built)
 // ─────────────────────────────────────────────
-// import routes from "./routes/index.js";
-// app.use("/api/v1", routes);
+app.use("/api/v1", routes);
 
 // ─────────────────────────────────────────────
 // 404 HANDLER — unmatched routes
@@ -155,7 +144,7 @@ app.use((err, req, res, _next) => {
   }
 
   // Log stack trace in development only
-  if (process.env.NODE_ENV === "development") {
+  if (settings.nodeEnv === "development") {
     console.error("❌ ERROR:", err);
   }
 
@@ -164,7 +153,7 @@ app.use((err, req, res, _next) => {
     statusCode,
     message,
     errors,
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    ...(settings.nodeEnv === "development" && { stack: err.stack }),
   });
 });
 

@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { settings } from "../config/settings.js";
 
 // ─────────────────────────────────────────────
 // EMAIL SERVICE
@@ -15,8 +16,8 @@ const createTransporter = () => {
   return nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS, // Gmail App Password (not account password)
+      user: settings.email.user,
+      pass: settings.email.pass,
     },
     // Connection pool for multiple emails
     pool: true,
@@ -42,14 +43,14 @@ const getTransporter = () => {
 // BRAND COLORS & SHARED STYLES
 // ─────────────────────────────────────────────
 const BRAND = {
-  name: "ZEE.BY ZOHAIB",
+  name: "ZEE.BY ZUNAISHA",
   primaryColor: "#1a1a1a",
   accentColor: "#c9a96e",  // Gold — luxury bag brand aesthetic
   lightBg: "#f9f7f4",
   textColor: "#333333",
-  whatsapp: process.env.VITE_WHATSAPP_NUMBER || "923XXXXXXXXX",
-  supportEmail: process.env.EMAIL_USER || "support@zeebyzohaib.com",
-  website: process.env.CLIENT_URL || "https://zeebyzohaib.com",
+  whatsapp: settings.whatsappNumber,
+  supportEmail: settings.email.user,
+  website: settings.clientUrl,
 };
 
 /**
@@ -126,14 +127,14 @@ const emailWrapper = (bodyHtml) => `
  * @param {{ to, subject, html, text? }} options
  */
 const sendEmail = async ({ to, subject, html, text }) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  if (!settings.email.user || !settings.email.pass) {
     console.warn(`[EMAIL] Skipped: EMAIL_USER or EMAIL_PASS not configured. Subject: "${subject}"`);
     return { skipped: true };
   }
 
   try {
     const info = await getTransporter().sendMail({
-      from: `"${BRAND.name}" <${process.env.EMAIL_USER}>`,
+      from: `"${BRAND.name}" <${settings.email.user}>`,
       to,
       subject,
       html,
@@ -282,7 +283,7 @@ const sendContactAdminNotification = async ({
   subject: submittedSubject,
   message,
 }) => {
-  const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
+  const adminEmail = settings.email.admin || settings.email.user;
   if (!adminEmail) return;
 
   const html = emailWrapper(`
@@ -359,7 +360,7 @@ const sendOrderStatusUpdate = async ({
     delivered: {
       emoji: "🎉",
       headline: "Order delivered!",
-      body: "We hope you love your ZEE.BY ZOHAIB bag. Thank you for shopping with us!",
+      body: "We hope you love your ZEE.BY ZUNAISHA bag. Thank you for shopping with us!",
     },
     cancelled: {
       emoji: "❌",

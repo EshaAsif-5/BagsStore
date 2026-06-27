@@ -1,6 +1,13 @@
 import { orderService } from "../services/order.service.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { settings } from "../config/settings.js";
+
+const getSessionId = (req) =>
+  req.cookies?.guestSessionId ||
+  req.headers["x-guest-session-id"] ||
+  req.get?.("x-guest-session-id") ||
+  null;
 
 // ─────────────────────────────────────────────
 // ORDER CONTROLLERS
@@ -24,6 +31,7 @@ import asyncHandler from "../utils/asyncHandler.js";
  */
 const placeOrder = asyncHandler(async (req, res) => {
   const userId = req.user?._id || null;
+  const sessionId = getSessionId(req);
 
   const {
     items,
@@ -37,17 +45,18 @@ const placeOrder = asyncHandler(async (req, res) => {
     notes,
   } = req.body;
 
-  // Build guest info only if not authenticated
+  // Guest info only when not authenticated — fall back to shipping address fields
   const guestInfo = !userId
     ? {
-        name: guestName,
+        name: guestName || shippingAddress?.fullName,
         email: guestEmail || null,
-        phone: guestPhone,
+        phone: guestPhone || shippingAddress?.phone,
       }
     : null;
 
   const order = await orderService.placeOrder({
     userId,
+    sessionId,
     guestInfo,
     items,
     shippingAddress,
@@ -82,7 +91,7 @@ const placeOrder = asyncHandler(async (req, res) => {
         },
         paymentInstructions,
       },
-      "Order placed successfully! Thank you for shopping with ZEE.BY ZOHAIB."
+      "Order placed successfully! Thank you for shopping with ZEE.BY ZUNAISHA."
     )
   );
 });
@@ -228,6 +237,9 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 // ─────────────────────────────────────────────
 const buildPaymentInstructions = (method, total) => {
   const formattedTotal = `PKR ${total.toLocaleString("en-PK")}`;
+  const whatsappDisplay = settings.whatsappNumber
+    ? `+${settings.whatsappNumber.replace(/^\+/, "")}`
+    : "our WhatsApp";
 
   const instructions = {
     cod: {
@@ -243,44 +255,44 @@ const buildPaymentInstructions = (method, total) => {
       title: "Bank Transfer",
       message: `Please transfer ${formattedTotal} to our bank account and share the transaction screenshot via WhatsApp.`,
       steps: [
-        `Transfer ${formattedTotal} to: Bank: Meezan Bank | Account Title: ZEE BY ZOHAIB | Account Number: XXXX-XXXX-XXXX`,
+        `Transfer ${formattedTotal} to: Bank: ${settings.bank.name} | Account Title: ${settings.bank.accountTitle} | Account Number: ${settings.bank.accountNumber}`,
         "Take a clear screenshot of the transaction receipt.",
-        "Send the screenshot to our WhatsApp: +92-XXX-XXXXXXX",
+        `Send the screenshot to ${whatsappDisplay}.`,
         "Your order will be confirmed once payment is verified (within 2 hours).",
       ],
       bankDetails: {
-        bankName: "Meezan Bank",
-        accountTitle: "ZEE BY ZOHAIB",
-        accountNumber: "XXXX-XXXX-XXXX",
-        iban: "PK00MEZN0000000000000000",
+        bankName: settings.bank.name,
+        accountTitle: settings.bank.accountTitle,
+        accountNumber: settings.bank.accountNumber,
+        iban: settings.bank.iban,
       },
     },
     easypaisa: {
       title: "EasyPaisa",
       message: `Send ${formattedTotal} to our EasyPaisa account and share the transaction ID.`,
       steps: [
-        `Send ${formattedTotal} via EasyPaisa to: 0300-XXXXXXX (ZEE BY ZOHAIB)`,
+        `Send ${formattedTotal} via EasyPaisa to: ${settings.easypaisaNumber} (${settings.bank.accountTitle})`,
         "Note the 11-digit transaction ID from the confirmation SMS.",
-        "Share the transaction ID on our WhatsApp: +92-XXX-XXXXXXX",
+        `Share the transaction ID on ${whatsappDisplay}.`,
         "Your order will be confirmed once payment is verified.",
       ],
       accountDetails: {
-        accountTitle: "ZEE BY ZOHAIB",
-        accountNumber: "0300-XXXXXXX",
+        accountTitle: settings.bank.accountTitle,
+        accountNumber: settings.easypaisaNumber,
       },
     },
     jazzcash: {
       title: "JazzCash",
       message: `Send ${formattedTotal} to our JazzCash account and share the transaction ID.`,
       steps: [
-        `Send ${formattedTotal} via JazzCash to: 0300-XXXXXXX (ZEE BY ZOHAIB)`,
+        `Send ${formattedTotal} via JazzCash to: ${settings.jazzcashNumber} (${settings.bank.accountTitle})`,
         "Note the transaction reference number from the confirmation.",
-        "Share the reference on our WhatsApp: +92-XXX-XXXXXXX",
+        `Share the reference on ${whatsappDisplay}.`,
         "Your order will be confirmed once payment is verified.",
       ],
       accountDetails: {
-        accountTitle: "ZEE BY ZOHAIB",
-        accountNumber: "0300-XXXXXXX",
+        accountTitle: settings.bank.accountTitle,
+        accountNumber: settings.jazzcashNumber,
       },
     },
     card: {

@@ -7,8 +7,9 @@ import {
   Share2,
   Video,
 } from "lucide-react";
+import { env } from "../../config/env.js";
 
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
+const WHATSAPP_NUMBER = env.whatsappNumber;
 
 const FOOTER_LINKS = {
   Shop: [
@@ -49,7 +50,7 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <Link to="/" className="inline-block mb-5">
               <p className="font-serif text-[17px] tracking-[4px] text-white uppercase">
-                ZEE.BY ZOHAIB
+                ZEE.BY ZUNAISHA
               </p>
               <p className="text-[10px] tracking-[3px] text-[#c9a96e] uppercase mt-1">
                 Crafted for You
@@ -69,14 +70,14 @@ export default function Footer() {
                 className="flex items-center gap-3 text-sm text-[#25D366] hover:text-white transition-colors group"
               >
                 <MessageCircle size={16} className="shrink-0" />
-                <span>WhatsApp: +92 300 1234567</span>
+                <span>WhatsApp: +{WHATSAPP_NUMBER.replace(/^\+/, "")}</span>
               </a>
               <a
-                href="mailto:hello@zeebyzohaib.com"
+                href={`mailto:${env.supportEmail}`}
                 className="flex items-center gap-3 text-sm text-[#998f83] hover:text-[#c9a96e] transition-colors"
               >
                 <Mail size={16} className="shrink-0" />
-                <span>hello@zeebyzohaib.com</span>
+                <span>{env.supportEmail}</span>
               </a>
               <div className="flex items-start gap-3 text-sm text-[#998f83]">
                 <MapPin size={16} className="shrink-0 mt-0.5" />
@@ -160,7 +161,7 @@ export default function Footer() {
               </h3>
               <p className="text-sm text-[#998f83] leading-relaxed">
                 Pakistan-wide delivery. Free shipping on orders above{" "}
-                <span className="text-[#c9a96e]">PKR 5,000</span>.
+                <span className="text-[#c9a96e]">PKR {env.shippingFreeThreshold.toLocaleString("en-PK")}</span>.
               </p>
               <p className="text-sm text-[#998f83] mt-2">
                 Estimated delivery: 2–5 business days.
@@ -177,7 +178,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <p className="text-[11px] text-[#554f48] tracking-wide">
-            © {year} ZEE.BY ZOHAIB. All rights reserved.
+            © {year} ZEE.BY ZUNAISHA. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
             <Link

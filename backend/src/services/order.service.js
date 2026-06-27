@@ -3,17 +3,14 @@ import { productRepository } from "../repositories/product.repository.js";
 import { cartRepository } from "../repositories/cart.repository.js";
 import ApiError from "../utils/ApiError.js";
 import generateOrderNumber from "../utils/generateOrderNumber.js";
+import { settings } from "../config/settings.js";
 
 // ─────────────────────────────────────────────
 // SHIPPING FEE RULES
 // Pakistan-only delivery.
-// Adjust thresholds and fees as business evolves.
 // ─────────────────────────────────────────────
-const SHIPPING_FEE_STANDARD = 200;   // PKR — standard delivery
-const SHIPPING_FEE_FREE_THRESHOLD = 5000; // PKR — free shipping above this subtotal
-
 const calculateShippingFee = (subtotal) => {
-  return subtotal >= SHIPPING_FEE_FREE_THRESHOLD ? 0 : SHIPPING_FEE_STANDARD;
+  return subtotal >= settings.shipping.freeThreshold ? 0 : settings.shipping.feeStandard;
 };
 
 // ─────────────────────────────────────────────
@@ -200,6 +197,7 @@ const restoreStockForItems = async (items) => {
  */
 const placeOrder = async ({
   userId,          // null for guest
+  sessionId,       // guest cart session — used to clear cart after order
   guestInfo,       // { name, email, phone } for guest
   items,
   shippingAddress,
@@ -274,14 +272,21 @@ const placeOrder = async ({
     throw new ApiError(500, "Order could not be saved. Please try again.");
   }
 
-  // 8. Clear the user's server-side cart after successful order
+  // 8. Clear server-side cart after successful order
   if (userId) {
     const cart = await cartRepository.findByUserIdRaw(userId);
     if (cart) {
       cart.items = [];
       await cart.save().catch(() => {
-        // Non-critical — cart will be stale but order is saved
         console.warn(`[WARN] Could not clear cart for user ${userId} after order ${orderNumber}.`);
+      });
+    }
+  } else if (sessionId) {
+    const guestCart = await cartRepository.findBySessionIdRaw(sessionId);
+    if (guestCart) {
+      guestCart.items = [];
+      await guestCart.save().catch(() => {
+        console.warn(`[WARN] Could not clear guest cart ${sessionId} after order ${orderNumber}.`);
       });
     }
   }

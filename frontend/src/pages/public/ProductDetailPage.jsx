@@ -22,9 +22,10 @@ import useCartStore from "../../store/cartStore.js";
 import useWishlistStore from "../../store/wishlistStore.js";
 import useAuthStore from "../../store/authStore.js";
 import toast from "react-hot-toast";
+import { env } from "../../config/env.js";
 
 const formatPrice = (n) => `PKR ${Number(n).toLocaleString("en-PK")}`;
-const WHATSAPP = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
+const WHATSAPP = env.whatsappNumber;
 
 // ─────────────────────────────────────────────
 // ACCORDION SECTION
@@ -453,7 +454,7 @@ export default function ProductDetailPage() {
             {/* Trust badges */}
             <div className="grid grid-cols-3 gap-3 pt-2">
               {[
-                { Icon: Truck, text: "Free Shipping\nAbove PKR 5K" },
+                { Icon: Truck, text: `Free Shipping\nAbove PKR ${(env.shippingFreeThreshold / 1000).toFixed(0)}K` },
                 { Icon: Shield, text: "Quality\nGuaranteed" },
                 { Icon: Package, text: "Easy\nReturns" },
               ].map(({ Icon, text }) => (
@@ -478,8 +479,8 @@ export default function ProductDetailPage() {
               <Accordion title="Delivery & Returns">
                 <ul className="space-y-1.5 list-disc list-inside">
                   <li>Pakistan-wide delivery — 2 to 5 business days</li>
-                  <li>Free shipping on orders above PKR 5,000</li>
-                  <li>Standard shipping: PKR 200</li>
+                  <li>Free shipping on orders above PKR {env.shippingFreeThreshold.toLocaleString("en-PK")}</li>
+                  <li>Standard shipping: PKR {env.shippingFeeStandard.toLocaleString("en-PK")}</li>
                   <li>Cash on Delivery available nationwide</li>
                   <li>Returns accepted within 7 days of delivery</li>
                   <li>Item must be unused and in original packaging</li>

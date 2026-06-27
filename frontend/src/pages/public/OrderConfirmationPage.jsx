@@ -14,12 +14,13 @@ import {
 } from "lucide-react";
 import orderService from "../../services/orderService.js";
 import toast from "react-hot-toast";
+import { env } from "../../config/env.js";
 
 // ─────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────
 const formatPrice = (n) => `PKR ${Number(n).toLocaleString("en-PK")}`;
-const WHATSAPP = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
+const WHATSAPP = env.whatsappNumber;
 
 const STATUS_LABELS = {
   pending: "Order Placed",
@@ -92,7 +93,7 @@ export default function OrderConfirmationPage() {
             Order Placed!
           </h1>
           <p className="text-[#998f83] text-base max-w-md mx-auto">
-            Thank you for shopping with ZEE.BY ZOHAIB. We'll keep you updated every step of the way.
+            Thank you for shopping with ZEE.BY ZUNAISHA. We'll keep you updated every step of the way.
           </p>
 
           {/* Order number */}

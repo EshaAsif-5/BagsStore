@@ -5,8 +5,16 @@ backend/node_modules/
 
 # Environment variables
 .env
+.env.*
 frontend/.env
+frontend/.env.*
 backend/.env
+backend/.env.*
+
+# Keep example env files
+!.env.example
+!frontend/.env.example
+!backend/.env.example
 
 # Build outputs
 frontend/dist/
@@ -25,10 +33,11 @@ Thumbs.db
 # Editor folders
 .vscode/*
 !.vscode/extensions.json
+.idea/
 
 # Uploads (if storing locally during development before cloud upload)
 backend/uploads/
 
-# Environment-specific config (if any)
+# Environment-specific config
 .env.local
 .env.*.local

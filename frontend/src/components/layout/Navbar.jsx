@@ -17,6 +17,7 @@ import useCartStore from "../../store/cartStore.js";
 import useWishlistStore from "../../store/wishlistStore.js";
 import MobileMenu from "./MobileMenu.jsx";
 import toast from "react-hot-toast";
+import { env } from "../../config/env.js";
 
 const CATEGORIES = [
   { label: "University", slug: "university" },
@@ -110,7 +111,7 @@ export default function Navbar() {
         {/* Announcement bar */}
         <div className="bg-[#1a1a1a] text-center py-2 px-4">
           <p className="text-[#c9a96e] text-[11px] tracking-[2.5px] uppercase font-medium">
-            Free delivery on orders over PKR 5,000 · Pakistan Only
+            Free delivery on orders over PKR {env.shippingFreeThreshold.toLocaleString("en-PK")} · Pakistan Only
           </p>
         </div>
 
@@ -163,7 +164,7 @@ export default function Navbar() {
               to="/"
               className="absolute left-1/2 -translate-x-1/2 font-serif text-[15px] sm:text-[17px] tracking-[4px] text-[#1a1a1a] uppercase whitespace-nowrap hover:text-[#c9a96e] transition-colors duration-200"
             >
-              ZEE.BY ZOHAIB
+              ZEE.BY ZUNAISHA
             </Link>
 
             {/* Right — icons */}

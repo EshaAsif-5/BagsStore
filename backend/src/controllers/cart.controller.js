@@ -4,10 +4,17 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 // ─────────────────────────────────────────────
 // SESSION HELPER
-// Extracts the guest sessionId from cookie.
-// Set by the client as a UUID on first page load.
+// Guest carts are identified by cookie or x-guest-session-id header.
+// The frontend stores the UUID in localStorage and sends it as a header.
 // ─────────────────────────────────────────────
-const getSessionId = (req) => req.cookies?.guestSessionId || null;
+const getSessionId = (req) => {
+  const sessionId =
+    req.cookies?.guestSessionId ||
+    req.headers["x-guest-session-id"] ||
+    req.get?.("x-guest-session-id") ||
+    null;
+  return sessionId;
+};
 
 // ─────────────────────────────────────────────
 // CART CONTROLLERS

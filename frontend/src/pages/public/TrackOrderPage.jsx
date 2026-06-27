@@ -19,6 +19,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import orderService from "../../services/orderService.js";
+import { env } from "../../config/env.js";
 
 // ─────────────────────────────────────────────
 // HELPERS
@@ -33,7 +34,7 @@ const formatDate = (iso) =>
     minute: "2-digit",
   });
 
-const WHATSAPP = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
+const WHATSAPP = env.whatsappNumber;
 
 const PAYMENT_LABELS = {
   cod: "Cash on Delivery",

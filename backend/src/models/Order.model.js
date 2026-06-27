@@ -319,8 +319,8 @@ orderSchema.index({ orderNumber: 1, "shippingAddress.phone": 1 });
 // ─────────────────────────────────────────────
 // PRE-SAVE: GENERATE ORDER NUMBER
 // ─────────────────────────────────────────────
-orderSchema.pre("save", async function (next) {
-  if (!this.isNew) return next();
+orderSchema.pre("save", async function () {
+  if (!this.isNew) return;
 
   const year = new Date().getFullYear();
   const count = await mongoose.model("Order").countDocuments();
@@ -333,15 +333,13 @@ orderSchema.pre("save", async function (next) {
     note: "Order placed successfully",
     timestamp: new Date(),
   });
-
-  next();
 });
 
 // ─────────────────────────────────────────────
 // PRE-SAVE: AUTO-SET TIMESTAMPS ON STATUS CHANGE
 // ─────────────────────────────────────────────
-orderSchema.pre("save", function (next) {
-  if (!this.isModified("status")) return next();
+orderSchema.pre("save", function () {
+  if (!this.isModified("status")) return;
 
   if (this.status === "delivered" && !this.deliveredAt) {
     this.deliveredAt = new Date();
@@ -349,8 +347,6 @@ orderSchema.pre("save", function (next) {
   if (this.status === "cancelled" && !this.cancelledAt) {
     this.cancelledAt = new Date();
   }
-
-  next();
 });
 
 // ─────────────────────────────────────────────

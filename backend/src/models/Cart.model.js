@@ -41,11 +41,12 @@ const cartItemSchema = new mongoose.Schema(
 // ─────────────────────────────────────────────
 const cartSchema = new mongoose.Schema(
   {
-    // null for guest carts (identified by sessionId instead)
+    // Omitted entirely on guest carts (identified by sessionId instead).
+    // Do NOT default to null — a unique sparse index on user treats null as a
+    // duplicate value and only allows one guest cart in the whole database.
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      default: null,
     },
     // Guest cart identifier (UUID generated client-side, stored in cookie)
     sessionId: {
@@ -77,15 +78,23 @@ const cartSchema = new mongoose.Schema(
 // ─────────────────────────────────────────────
 // INDEXES
 // ─────────────────────────────────────────────
-cartSchema.index({ user: 1 }, { unique: true, sparse: true }); // One cart per user
-cartSchema.index({ sessionId: 1 }, { sparse: true });          // Guest cart lookup
+// One cart per authenticated user — partial index excludes guest carts (no user field).
+cartSchema.index(
+  { user: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { user: { $type: "objectId" } },
+  }
+);
+// One cart per guest session
+cartSchema.index({ sessionId: 1 }, { unique: true, sparse: true });
 cartSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // TTL for guest carts
 
 // ─────────────────────────────────────────────
 // PRE-SAVE: SET EXPIRY FOR GUEST CARTS
 // Authenticated user carts do not expire.
 // ─────────────────────────────────────────────
-cartSchema.pre("save", function (next) {
+cartSchema.pre("save", function () {
   if (!this.user && this.sessionId) {
     // Guest cart: expires 7 days from last update
     const sevenDays = 7 * 24 * 60 * 60 * 1000;
@@ -94,7 +103,6 @@ cartSchema.pre("save", function (next) {
     // Authenticated user cart: never expires via TTL
     this.expiresAt = null;
   }
-  next();
 });
 
 // ─────────────────────────────────────────────

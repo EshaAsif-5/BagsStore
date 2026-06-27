@@ -3,6 +3,11 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Shield, Truck, RefreshCw, MessageCircle } from "lucide-react";
 import ProductGrid from "../../components/product/ProductGrid.jsx";
 import productService from "../../services/productService.js";
+import { env } from "../../config/env.js";
+
+// Isolated product shot — white bg removed via mix-blend-darken on dark hero
+const HERO_BAG_IMAGE =
+  "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=900&q=85&auto=format&fit=crop";
 
 // ─────────────────────────────────────────────
 // CONSTANTS
@@ -87,52 +92,63 @@ function HeroSection() {
       <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#c9a96e] opacity-[0.07] blur-[120px] -translate-y-1/4 translate-x-1/4" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-20">
-        <div className="max-w-2xl">
-          {/* Eyebrow */}
-          <p className="text-[11px] tracking-[4px] uppercase text-[#c9a96e] font-medium mb-6">
-            New Collection 2024
-          </p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="max-w-xl text-left">
+            {/* Eyebrow */}
+            <p className="text-[11px] tracking-[4px] uppercase text-[#c9a96e] font-medium mb-6">
+              New Collection 2024
+            </p>
 
-          {/* Headline */}
-          <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-white leading-[1.05] mb-6">
-            Bags That
-            <span className="block italic text-[#c9a96e]">Speak for You</span>
-          </h1>
+            {/* Headline */}
+            <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-white leading-[1.05] mb-6">
+              Bags That
+              <span className="block italic text-[#c9a96e]">Speak for You</span>
+            </h1>
 
-          <p className="text-base text-[#998f83] leading-relaxed max-w-md mb-10">
-            Premium bags for every occasion — from university halls to luxury
-            events. Crafted with care, delivered across Pakistan.
-          </p>
+            <p className="text-base text-[#998f83] leading-relaxed max-w-md mb-10">
+              Premium bags for every occasion — from university halls to luxury
+              events. Crafted with care, delivered across Pakistan.
+            </p>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link
-              to="/products"
-              className="inline-flex items-center justify-center gap-2 bg-[#c9a96e] text-[#1a1a1a] text-sm tracking-[2px] uppercase font-bold px-8 py-4 hover:bg-white transition-colors duration-200 group"
-            >
-              Shop Collection
-              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              to="/products?category=luxury"
-              className="inline-flex items-center justify-center gap-2 border border-[#333] text-[#d4cdc2] text-sm tracking-[2px] uppercase font-medium px-8 py-4 hover:border-[#c9a96e] hover:text-[#c9a96e] transition-colors duration-200"
-            >
-              View Luxury
-            </Link>
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                to="/products"
+                className="inline-flex items-center justify-center gap-2 bg-[#c9a96e] text-[#1a1a1a] text-sm tracking-[2px] uppercase font-bold px-8 py-4 hover:bg-white transition-colors duration-200 group"
+              >
+                Shop Collection
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                to="/products?category=luxury"
+                className="inline-flex items-center justify-center gap-2 border border-[#333] text-[#d4cdc2] text-sm tracking-[2px] uppercase font-medium px-8 py-4 hover:border-[#c9a96e] hover:text-[#c9a96e] transition-colors duration-200"
+              >
+                View Luxury
+              </Link>
+            </div>
+
+            {/* Trust indicators */}
+            <div className="flex items-center gap-6 mt-12 pt-8 border-t border-[#2a2a2a]">
+              {[
+                { value: "20–50", label: "Products" },
+                { value: "4", label: "Categories" },
+                { value: `PKR ${(env.shippingFreeThreshold / 1000).toFixed(0)}K+`, label: "Free Shipping" },
+              ].map(({ value, label }) => (
+                <div key={label}>
+                  <p className="text-lg font-serif text-white leading-none">{value}</p>
+                  <p className="text-[10px] tracking-[1.5px] uppercase text-[#555] mt-1">{label}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Trust indicators */}
-          <div className="flex items-center gap-6 mt-12 pt-8 border-t border-[#2a2a2a]">
-            {[
-              { value: "20–50", label: "Products" },
-              { value: "4", label: "Categories" },
-              { value: "PKR 5K+", label: "Free Shipping" },
-            ].map(({ value, label }) => (
-              <div key={label}>
-                <p className="text-lg font-serif text-white leading-none">{value}</p>
-                <p className="text-[10px] tracking-[1.5px] uppercase text-[#555] mt-1">{label}</p>
-              </div>
-            ))}
+          <div className="flex items-center justify-center lg:justify-end">
+            <img
+              src={HERO_BAG_IMAGE}
+              alt="Modern black leather handbag"
+              draggable={false}
+              className="w-full max-w-xs sm:max-w-sm lg:max-w-md xl:max-w-lg h-auto object-contain mix-blend-darken select-none pointer-events-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+            />
           </div>
         </div>
       </div>
@@ -241,7 +257,7 @@ function BrandValuesSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <p className="text-[10px] tracking-[3px] uppercase text-[#c9a96e] font-medium mb-2">
-            Why ZEE.BY ZOHAIB
+            Why ZEE.BY ZUNAISHA
           </p>
           <h2 className="font-serif text-3xl sm:text-4xl text-[#1a1a1a]">
             Our Promise to You
@@ -302,7 +318,7 @@ function NewArrivalsSection() {
 }
 
 function CTABannerSection() {
-  const WHATSAPP = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
+  const WHATSAPP = env.whatsappNumber;
   return (
     <section className="bg-[#1a1a1a] py-16 sm:py-20">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
@@ -318,7 +334,7 @@ function CTABannerSection() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href={`https://wa.me/${WHATSAPP}?text=Hi! I need help choosing a bag from ZEE.BY ZOHAIB.`}
+            href={`https://wa.me/${WHATSAPP}?text=Hi! I need help choosing a bag from ZEE.BY ZUNAISHA.`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2.5 bg-[#25D366] text-white text-sm tracking-[2px] uppercase font-bold px-8 py-4 hover:bg-[#20bf5c] transition-colors"

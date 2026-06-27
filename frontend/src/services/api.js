@@ -1,4 +1,6 @@
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+import { env } from "../config/env.js";
 
 // ─────────────────────────────────────────────
 // AXIOS INSTANCE
@@ -14,7 +16,7 @@ import axios from "axios";
 //              → normalise error shape for services
 // ─────────────────────────────────────────────
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1";
+const BASE_URL = env.apiBaseUrl;
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -51,11 +53,13 @@ const processQueue = (error) => {
 api.interceptors.request.use(
   (config) => {
     // Inject guest session ID for guest cart resolution.
-    // The server reads this to find/create the guest cart.
-    const guestSessionId = localStorage.getItem("zee_guest_session");
-    if (guestSessionId) {
-      config.headers["x-guest-session-id"] = guestSessionId;
+    // Create one on first request so guests can add to cart immediately.
+    let guestSessionId = localStorage.getItem("zee_guest_session");
+    if (!guestSessionId) {
+      guestSessionId = uuidv4();
+      localStorage.setItem("zee_guest_session", guestSessionId);
     }
+    config.headers["x-guest-session-id"] = guestSessionId;
 
     return config;
   },

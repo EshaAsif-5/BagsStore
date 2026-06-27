@@ -211,8 +211,8 @@ productSchema.virtual("inStock").get(function () {
 // ─────────────────────────────────────────────
 // PRE-SAVE: GENERATE UNIQUE SLUG
 // ─────────────────────────────────────────────
-productSchema.pre("save", async function (next) {
-  if (!this.isModified("name")) return next();
+productSchema.pre("save", async function () {
+  if (!this.isModified("name")) return;
 
   let baseSlug = slugify(this.name, { lower: true, strict: true });
   let slug = baseSlug;
@@ -225,14 +225,13 @@ productSchema.pre("save", async function (next) {
   }
 
   this.slug = slug;
-  next();
 });
 
 // ─────────────────────────────────────────────
 // PRE-SAVE: ENFORCE SINGLE PRIMARY IMAGE
 // ─────────────────────────────────────────────
-productSchema.pre("save", function (next) {
-  if (!this.isModified("images")) return next();
+productSchema.pre("save", function () {
+  if (!this.isModified("images")) return;
 
   const primaryImages = this.images.filter((img) => img.isPrimary);
 
@@ -244,8 +243,6 @@ productSchema.pre("save", function (next) {
   if (primaryImages.length === 0 && this.images.length > 0) {
     this.images[0].isPrimary = true;
   }
-
-  next();
 });
 
 // ─────────────────────────────────────────────

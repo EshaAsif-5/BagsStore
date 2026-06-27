@@ -149,9 +149,9 @@ userSchema.index({ role: 1 });
 // ─────────────────────────────────────────────
 // PRE-SAVE: HASH PASSWORD
 // ─────────────────────────────────────────────
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
   // Only hash if password was modified
-  if (!this.isModified("passwordHash")) return next();
+  if (!this.isModified("passwordHash")) return;
 
   this.passwordHash = await bcrypt.hash(this.passwordHash, 12);
 
@@ -159,15 +159,13 @@ userSchema.pre("save", async function (next) {
   if (!this.isNew) {
     this.passwordChangedAt = Date.now() - 1000; // 1s buffer for JWT iat lag
   }
-
-  next();
 });
 
 // ─────────────────────────────────────────────
 // PRE-SAVE: ENFORCE SINGLE DEFAULT ADDRESS
 // ─────────────────────────────────────────────
-userSchema.pre("save", function (next) {
-  if (!this.isModified("addresses")) return next();
+userSchema.pre("save", function () {
+  if (!this.isModified("addresses")) return;
 
   const defaultAddresses = this.addresses.filter((a) => a.isDefault);
 
@@ -181,8 +179,6 @@ userSchema.pre("save", function (next) {
   if (defaultAddresses.length === 0 && this.addresses.length > 0) {
     this.addresses[0].isDefault = true;
   }
-
-  next();
 });
 
 // ─────────────────────────────────────────────

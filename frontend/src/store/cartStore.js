@@ -128,7 +128,7 @@ const useCartStore = create(
             get()._setCart(data.data.cart);
           } catch (err) {
             get()._setError(
-              err.response?.data?.message || "Could not load cart."
+              err.message || err.response?.data?.message || "Could not load cart."
             );
           }
         },
@@ -191,7 +191,9 @@ const useCartStore = create(
             // Revert optimistic update on failure by re-fetching
             await get().fetchCart();
             const message =
-              err.response?.data?.message || "Could not add item to cart.";
+              err.message ||
+              err.response?.data?.message ||
+              "Could not add item to cart.";
             get()._setError(message);
             throw new Error(message);
           }

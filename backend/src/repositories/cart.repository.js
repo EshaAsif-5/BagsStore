@@ -23,7 +23,7 @@ const findByUserId = (userId) => {
  * Populates product details for each cart item.
  */
 const findBySessionId = (sessionId) => {
-  return Cart.findOne({ sessionId, user: null }).populate({
+  return Cart.findOne({ sessionId }).populate({
     path: "items.product",
     select: "name slug images variants isActive category",
   });
@@ -41,7 +41,7 @@ const findByUserIdRaw = (userId) => {
  * Find a guest cart by sessionId without populating.
  */
 const findBySessionIdRaw = (sessionId) => {
-  return Cart.findOne({ sessionId, user: null });
+  return Cart.findOne({ sessionId });
 };
 
 /**
@@ -57,7 +57,7 @@ const createForUser = async (userId) => {
  * Create a new empty guest cart with a sessionId.
  */
 const createForGuest = async (sessionId) => {
-  const cart = new Cart({ sessionId, user: null, items: [] });
+  const cart = new Cart({ sessionId, items: [] });
   await cart.save();
   return cart;
 };
@@ -97,7 +97,7 @@ const getOrCreateForGuest = async (sessionId) => {
  * Delete a guest cart after merging into a user cart on login.
  */
 const deleteBySessionId = (sessionId) => {
-  return Cart.findOneAndDelete({ sessionId, user: null });
+  return Cart.findOneAndDelete({ sessionId });
 };
 
 /**

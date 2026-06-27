@@ -16,8 +16,9 @@ import {
 import toast from "react-hot-toast";
 import contactService from "../../services/contactService.js";
 import useAuthStore from "../../store/authStore.js";
+import { env } from "../../config/env.js";
 
-const WHATSAPP = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
+const WHATSAPP = env.whatsappNumber;
 
 const contactSchema = z.object({
   name: z
@@ -286,14 +287,14 @@ export default function ContactPage() {
                 </li>
                 <li>
                   <a
-                    href="mailto:hello@zeebyzohaib.com"
+                    href={`mailto:${env.supportEmail}`}
                     className="flex items-start gap-3 text-sm text-[#555] hover:text-[#c9a96e] transition-colors"
                   >
                     <Mail size={18} className="shrink-0 mt-0.5" />
                     <span>
                       <span className="block font-semibold">Email</span>
                       <span className="text-[#888] text-xs">
-                        hello@zeebyzohaib.com
+                        {env.supportEmail}
                       </span>
                     </span>
                   </a>

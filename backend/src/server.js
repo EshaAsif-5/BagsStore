@@ -14,7 +14,7 @@ const startServer = async () => {
   const server = app.listen(PORT, () => {
     console.log(`
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  🛍️  ZEE.BY ZOHAIB — API Server
+  🛍️  ZEE.BY ZUNAISHA — API Server
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   🌍  Environment : ${NODE_ENV}
   🚀  Port        : ${PORT}

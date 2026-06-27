@@ -16,6 +16,7 @@ import {
 import useAuthStore from "../../store/authStore.js";
 import useCartStore from "../../store/cartStore.js";
 import toast from "react-hot-toast";
+import { env } from "../../config/env.js";
 
 const CATEGORIES = [
   { label: "University Bags", slug: "university" },
@@ -24,7 +25,7 @@ const CATEGORIES = [
   { label: "Stylish Bags", slug: "stylish" },
 ];
 
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
+const WHATSAPP_NUMBER = env.whatsappNumber;
 
 export default function MobileMenu({ isOpen, onClose }) {
   const navigate = useNavigate();
@@ -95,7 +96,7 @@ export default function MobileMenu({ isOpen, onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#e8e0d4]">
           <Link to="/" onClick={onClose} className="font-serif text-base tracking-[3px] text-[#1a1a1a] uppercase">
-            ZEE.BY ZOHAIB
+            ZEE.BY ZUNAISHA
           </Link>
           <button
             onClick={onClose}
@@ -268,7 +269,7 @@ export default function MobileMenu({ isOpen, onClose }) {
         {/* Footer — WhatsApp */}
         <div className="px-5 py-4 border-t border-[#e8e0d4]">
           <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hi! I need help with ZEE.BY ZOHAIB.`}
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hi! I need help with ZEE.BY ZUNAISHA.`}
             target="_blank"
             rel="noopener noreferrer"
             onClick={onClose}

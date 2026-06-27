@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import AppRouter from "./routes/AppRouter.jsx";
 import useAuthStore from "./store/authStore.js";
+import useCartStore from "./store/cartStore.js";
 
 // ─────────────────────────────────────────────
 // SCROLL RESTORATION
@@ -24,6 +25,8 @@ function ScrollToTop() {
 export default function App() {
   const initAuth = useAuthStore((s) => s.initAuth);
   const authInitialised = useAuthStore((s) => s.authInitialised);
+  const initSession = useCartStore((s) => s.initSession);
+  const fetchCart = useCartStore((s) => s.fetchCart);
 
   // On mount: hit /auth/me to hydrate the auth store from
   // the HTTP-only cookie. If the cookie is expired or absent,
@@ -31,6 +34,13 @@ export default function App() {
   useEffect(() => {
     initAuth();
   }, [initAuth]);
+
+  // Sync cart from MongoDB after auth check (guest or logged-in).
+  useEffect(() => {
+    if (!authInitialised) return;
+    initSession();
+    fetchCart();
+  }, [authInitialised, initSession, fetchCart]);
 
   // Render nothing until auth is initialised — prevents a flash
   // of the login page for already-authenticated users on protected routes.
@@ -40,7 +50,7 @@ export default function App() {
         <div className="flex flex-col items-center gap-4">
           {/* Brand wordmark shown during initial auth check */}
           <p className="text-xl font-serif tracking-[4px] text-[#1a1a1a] uppercase">
-            ZEE.BY ZOHAIB
+            ZEE.BY ZUNAISHA
           </p>
           {/* Animated loading bar */}
           <div className="w-48 h-0.5 bg-[#e5e0d8] overflow-hidden rounded-full">

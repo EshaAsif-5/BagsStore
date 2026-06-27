@@ -64,7 +64,7 @@ const register = asyncHandler(async (req, res) => {
           createdAt: user.createdAt,
         },
       },
-      "Account created successfully. Welcome to ZEE.BY ZOHAIB!"
+      "Account created successfully. Welcome to ZEE.BY ZUNAISHA!"
     )
   );
 });

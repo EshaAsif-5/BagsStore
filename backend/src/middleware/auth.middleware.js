@@ -83,7 +83,7 @@ export const optionalAuth = asyncHandler(async (req, _res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await userRepository.findById(decoded.id);
+    const user = await userRepository.findById(decoded.id, true);
 
     if (user && user.isActive && !user.isPasswordChangedAfter(decoded.iat)) {
       req.user = user;

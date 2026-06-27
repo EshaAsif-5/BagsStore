@@ -24,12 +24,13 @@ import useCartStore from "../../store/cartStore.js";
 import useAuthStore from "../../store/authStore.js";
 import orderService from "../../services/orderService.js";
 import toast from "react-hot-toast";
+import { env } from "../../config/env.js";
 
 // ─────────────────────────────────────────────
 // CONSTANTS
 // ─────────────────────────────────────────────
-const SHIPPING_THRESHOLD = 5000;
-const SHIPPING_FEE = 200;
+const SHIPPING_THRESHOLD = env.shippingFreeThreshold;
+const SHIPPING_FEE = env.shippingFeeStandard;
 const formatPrice = (n) => `PKR ${Number(n).toLocaleString("en-PK")}`;
 
 const PROVINCES = [
@@ -396,16 +397,16 @@ function PaymentStep({ onNext, onBack, savedPayment }) {
               How to Pay via {activeMethod.label}:
             </p>
             {selected === "easypaisa" && (
-              <p>Send <strong>your total</strong> to: <span className="text-[#c9a96e] font-mono">0300-XXXXXXX</span> (ZEE BY ZOHAIB)</p>
+              <p>Send <strong>your total</strong> to: <span className="text-[#c9a96e] font-mono">{env.easypaisaNumber}</span> ({env.bankAccountTitle})</p>
             )}
             {selected === "jazzcash" && (
-              <p>Send <strong>your total</strong> to: <span className="text-[#c9a96e] font-mono">0300-XXXXXXX</span> (ZEE BY ZOHAIB)</p>
+              <p>Send <strong>your total</strong> to: <span className="text-[#c9a96e] font-mono">{env.jazzcashNumber}</span> ({env.bankAccountTitle})</p>
             )}
             {selected === "bank_transfer" && (
               <>
-                <p>Bank: <strong>Meezan Bank</strong></p>
-                <p>Account: <span className="text-[#c9a96e] font-mono">XXXX-XXXX-XXXX</span></p>
-                <p>Title: <strong>ZEE BY ZOHAIB</strong></p>
+                <p>Bank: <strong>{env.bankName}</strong></p>
+                <p>Account: <span className="text-[#c9a96e] font-mono">{env.bankAccountNumber}</span></p>
+                <p>Title: <strong>{env.bankAccountTitle}</strong></p>
               </>
             )}
           </div>
@@ -608,7 +609,7 @@ function ReviewStep({ address, payment, items, subtotal, onBack, onPlace, isPlac
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuthStore();
-  const { items, subtotal, clearLocalCart } = useCartStore();
+  const { items, subtotal, clearCart } = useCartStore();
 
   const [step, setStep] = useState(1);
   const [address, setAddress] = useState(null);
@@ -623,8 +624,13 @@ export default function CheckoutPage() {
 
   const { mutate: placeOrder, isPending } = useMutation({
     mutationFn: (payload) => orderService.placeOrder(payload),
-    onSuccess: (data) => {
-      clearLocalCart();
+    onSuccess: async (data) => {
+      try {
+        await clearCart();
+      } catch {
+        // Order is saved — cart clear failure is non-critical
+      }
+      toast.success("🎉 Your order has been placed successfully!");
       navigate(`/order-confirmation/${data.order._id}`, {
         state: {
           order: data.order,
@@ -675,7 +681,7 @@ export default function CheckoutPage() {
       paymentMethod: payment.method,
       paymentTransactionId: payment.transactionId || undefined,
       notes: address.notes || undefined,
-      // Guest fields
+      // Guest checkout fields — also used as fallback if auth cookie is missing
       ...(!isAuthenticated && {
         guestName: address.fullName,
         guestEmail: address.guestEmail || undefined,
@@ -697,7 +703,7 @@ export default function CheckoutPage() {
             to="/"
             className="font-serif text-sm tracking-[3px] text-[#1a1a1a] uppercase hover:text-[#c9a96e] transition-colors"
           >
-            ZEE.BY ZOHAIB
+            ZEE.BY ZUNAISHA
           </Link>
           <Link
             to="/cart"

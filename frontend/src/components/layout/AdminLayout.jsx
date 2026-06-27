@@ -45,7 +45,7 @@ export default function AdminLayout() {
       {/* Brand */}
       <div className="px-5 py-5 border-b border-[#2a2a2a]">
         <Link to="/" className="block">
-          <p className="font-serif text-[13px] tracking-[3px] text-white uppercase">ZEE.BY ZOHAIB</p>
+          <p className="font-serif text-[13px] tracking-[3px] text-white uppercase">ZEE.BY ZUNAISHA</p>
           <p className="text-[9px] tracking-[2px] text-[#c9a96e] uppercase mt-0.5">Admin Panel</p>
         </Link>
       </div>
@@ -117,7 +117,7 @@ export default function AdminLayout() {
           <button onClick={() => setSidebarOpen(true)} className="text-[#888] hover:text-white" aria-label="Open sidebar">
             <Menu size={20} />
           </button>
-          <p className="font-serif text-sm tracking-[3px] text-white uppercase">ZEE.BY ZOHAIB</p>
+          <p className="font-serif text-sm tracking-[3px] text-white uppercase">ZEE.BY ZUNAISHA</p>
         </header>
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
