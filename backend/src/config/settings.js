@@ -9,8 +9,8 @@ const toNumber = (value, fallback) => {
 };
 export const allowedOrigins = [
   "http://localhost:5173",
-  "https://bags-store-eight.vercel.app",
-];
+  process.env.CLIENT_URL,
+].filter(Boolean);
 export const settings = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: toNumber(process.env.PORT, 5000),
