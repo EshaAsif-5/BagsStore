@@ -5,8 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js",
-  "dev": "nodemon src/server.js",
-  "seed": "node seed/seedProducts.js"
+    "dev": "nodemon src/server.js",
+    "seed": "node seed/seedProducts.js"
   },
   "keywords": [],
   "author": "",
@@ -22,10 +22,12 @@
     "express-rate-limit": "^8.5.2",
     "express-validator": "^7.3.2",
     "helmet": "^8.2.0",
+    "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.0",
     "morgan": "^1.11.0",
-    "multer": "^2.1.1"
+    "multer": "^2.1.1",
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

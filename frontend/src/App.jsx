@@ -1,122 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import AppRouter from "./routes/AppRouter.jsx";
+import useAuthStore from "./store/authStore.js";
 
-function App() {
-  const [count, setCount] = useState(0)
+// ─────────────────────────────────────────────
+// SCROLL RESTORATION
+// React Router v6 does not restore scroll
+// position on navigation by default.
+// ─────────────────────────────────────────────
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+}
+
+// ─────────────────────────────────────────────
+// APP
+// Initialises auth state from the server on
+// first load (via /auth/me), then renders routes.
+// ─────────────────────────────────────────────
+export default function App() {
+  const initAuth = useAuthStore((s) => s.initAuth);
+  const authInitialised = useAuthStore((s) => s.authInitialised);
+
+  // On mount: hit /auth/me to hydrate the auth store from
+  // the HTTP-only cookie. If the cookie is expired or absent,
+  // the user is silently treated as a guest.
+  useEffect(() => {
+    initAuth();
+  }, [initAuth]);
+
+  // Render nothing until auth is initialised — prevents a flash
+  // of the login page for already-authenticated users on protected routes.
+  if (!authInitialised) {
+    return (
+      <div className="min-h-screen bg-[#f9f7f4] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          {/* Brand wordmark shown during initial auth check */}
+          <p className="text-xl font-serif tracking-[4px] text-[#1a1a1a] uppercase">
+            ZEE.BY ZOHAIB
+          </p>
+          {/* Animated loading bar */}
+          <div className="w-48 h-0.5 bg-[#e5e0d8] overflow-hidden rounded-full">
+            <div className="h-full bg-[#c9a96e] rounded-full animate-[loading_1.2s_ease-in-out_infinite]" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <ScrollToTop />
+      <AppRouter />
     </>
-  )
+  );
 }
-
-export default App
