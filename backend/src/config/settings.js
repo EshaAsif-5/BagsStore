@@ -7,7 +7,10 @@ const toNumber = (value, fallback) => {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
 };
-
+export const allowedOrigins = [
+  "http://localhost:5173",
+  "https://bags-store-eight.vercel.app",
+];
 export const settings = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: toNumber(process.env.PORT, 5000),
