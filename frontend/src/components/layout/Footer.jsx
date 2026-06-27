@@ -3,9 +3,9 @@ import {
   MessageCircle,
   Mail,
   MapPin,
-  Instagram,
-  Facebook,
-  Youtube,
+  Camera,
+  Share2,
+  Video,
 } from "lucide-react";
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "923001234567";
@@ -89,17 +89,17 @@ export default function Footer() {
               {[
                 {
                   href: "https://instagram.com",
-                  Icon: Instagram,
+                  Icon: Camera,
                   label: "Instagram",
                 },
                 {
                   href: "https://facebook.com",
-                  Icon: Facebook,
+                  Icon: Share2,
                   label: "Facebook",
                 },
                 {
                   href: "https://youtube.com",
-                  Icon: Youtube,
+                  Icon: Video,
                   label: "YouTube",
                 },
               ].map(({ href, Icon, label }) => (
