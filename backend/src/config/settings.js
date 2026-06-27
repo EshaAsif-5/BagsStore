@@ -7,10 +7,7 @@ const toNumber = (value, fallback) => {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
 };
-export const allowedOrigins = [
-  "http://localhost:5173",
-  process.env.CLIENT_URL,
-].filter(Boolean);
+
 export const settings = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: toNumber(process.env.PORT, 5000),
@@ -64,7 +61,11 @@ export const settings = {
   },
 };
 
+// Allowed frontend origins
 export const allowedOrigins = [
+  "http://localhost:5173",
   settings.clientUrl,
   settings.devClientUrl,
 ].filter(Boolean);
+
+console.log("✅ Allowed Origins:", allowedOrigins);
