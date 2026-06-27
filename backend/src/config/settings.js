@@ -63,9 +63,9 @@ export const settings = {
 
 // Allowed frontend origins
 export const allowedOrigins = [
+  settings.clientUrl?.replace(/\/$/, ""),
+  settings.devClientUrl?.replace(/\/$/, ""),
   "http://localhost:5173",
-  settings.clientUrl,
-  settings.devClientUrl,
 ].filter(Boolean);
 
 console.log("✅ Allowed Origins:", allowedOrigins);
