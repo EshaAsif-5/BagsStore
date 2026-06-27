@@ -2,9 +2,9 @@
 
 A full-stack MERN eCommerce application for premium bags with secure authentication, admin product management, shopping cart, checkout, and Cloudinary image uploads.
 
-## 🚀 Live Demo
+## video walk through
 
-🌐 (https://youtu.be/oPiIx26dFYM)
+🌐 [https://youtu.be/oPiIx26dFYM]
 
 ## ✨ Features
 
