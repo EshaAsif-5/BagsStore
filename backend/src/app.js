@@ -15,27 +15,38 @@ const app = express();
 // SECURITY HEADERS
 // ─────────────────────────────────────────────
 app.use(helmet());
-
 // ─────────────────────────────────────────────
 // CORS
 // ─────────────────────────────────────────────
 const allowedOriginsList = allowedOrigins;
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, Postman, curl)
-      if (!origin) return callback(null, true);
-      if (allowedOriginsList.includes(origin)) {
-        return callback(null, true);
-      }
-      callback(new Error(`CORS: Origin '${origin}' not allowed.`));
-    },
-    credentials: true, // Required for HTTP-only cookie auth
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-guest-session-id"],
-  })
-);
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow Postman, curl, mobile apps
+    if (!origin) return callback(null, true);
+
+    if (allowedOriginsList.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.log("❌ Blocked Origin:", origin);
+    console.log("✅ Allowed Origins:", allowedOriginsList);
+
+    return callback(new Error(`CORS: Origin '${origin}' not allowed.`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "x-guest-session-id",
+  ],
+};
+
+app.use(cors(corsOptions));
+
+// Handle browser preflight requests
+app.options("*", cors(corsOptions));
 
 // ─────────────────────────────────────────────
 // BODY PARSERS
