@@ -48,7 +48,4 @@ cd frontend
 npm run dev
 ```
 
-## 👩‍💻 Developer
 
-**Esha Asif**
-MERN Stack Developer
